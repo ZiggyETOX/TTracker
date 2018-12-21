@@ -128,13 +128,11 @@ class TransactionController extends Controller {
 			$user = Auth::user();
 			$user->balance += $request->input('amount');
 			$user->save();
-
 		} else {
 
 			$user = Auth::user();
 			$user->balance -= $request->input('amount');
 			$user->save();
-
 		}
 
 		$date = $request->input('date');
@@ -143,12 +141,14 @@ class TransactionController extends Controller {
 		$invoice = \App\Invoice::where('name', $name)->where('user_id', $userID)->first();
 
 		if ($invoice == null) {
+
 			$invoiceCreate = new \App\Invoice;
 			$invoiceCreate->name = $name;
 			$invoiceCreate->user_id = $userID;
 			$invoiceCreate->save();
 			$transaction->invoice_id = $invoiceCreate->id;
 		} else {
+
 			$transaction->invoice_id = $invoice->id;
 		}
 
@@ -164,6 +164,7 @@ class TransactionController extends Controller {
 				->first();
 
 			if ($transactionSubType == null) {
+
 				$transactionSubTypeCreate = new \App\TransactionSubType;
 				$transactionSubTypeCreate->name = $name;
 				$transactionSubTypeCreate->type = $type;
@@ -171,6 +172,7 @@ class TransactionController extends Controller {
 				$transactionSubTypeCreate->save();
 				$transaction->transaction_sub_types_id = $transactionSubTypeCreate->id;
 			} else {
+
 				$transaction->transaction_sub_types_id = $transactionSubType->id;
 			}
 
@@ -179,9 +181,11 @@ class TransactionController extends Controller {
 
 		} else {
 			if (empty($request->input('subtype'))) {
+
 				return redirect('/transactions/create')->with(['message' => 'There was a problem with adding your transaction. Please try to submit again.', 'message_header' => 'Submission Unsuccessful']);
 			} else {
-				$transaction->transaction_sub_types_id = $request->input('subtype');
+
+				$transaction->transaction_sub_types_id = $request->input('sellectSubType');
 				$transaction->save();
 				return redirect('/invoices');
 			}

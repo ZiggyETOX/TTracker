@@ -129,7 +129,7 @@ class GroupController extends Controller {
 		$otp->user_id = $user->id;
 		$otp->save();
 
-		$return['groupinfo'] = ['name' => $group->name, 'description' => $message, 'pin' => $one_time_pin, 'from' => $user->name, 'url' => 'http://laravel.local/groups'];
+		$return['groupinfo'] = ['name' => $group->name, 'description' => $message, 'pin' => $one_time_pin, 'from' => $user->name, 'url' => 'http://ttracker.co.za/groups'];
 
 		Mail::to($email)
 			->send(new UserToGroup($return));
