@@ -36,10 +36,33 @@ class TransactionController extends Controller {
 
 	}
 
-	public function export($user_id, $date_name) {
+	public function export($type, $id, $date_name) {
 
-		$transactions = \App\User::find($user_id)->transactions;
+		if ($type == "user") {
+
+			$transactions = \App\User::find($id)->transactions;
+		} else {
+
+			$group = \App\group::where('id', $id)->first();
+
+			$invoices = null;
+			$invoices = \App\Invoice::whereIn('user_id', $group->users()->pluck('users.id'))
+				->distinct()
+				->get();
+			$transactions = \App\Transaction::whereIn('invoice_id', $invoices->pluck('id')->toArray())
+				->get();
+
+		}
+
+		foreach ($transactions as $transaction) {
+
+			$invoice = \App\Invoice::find($transaction->invoice_id);
+			$user = \App\User::find($invoice->user_id);
+			$transaction->owner = $user->name;
+		}
+
 		if ($date_name == "all") {
+
 			$transactions = $transactions;
 		} else {
 
@@ -349,11 +372,13 @@ class TransactionController extends Controller {
 	 * @return \Illuminate\Http\Response
 	 */
 	public function destroy(Transaction $transaction) {
-		$transaction->delete();
 
 		$income = 0;
 		$expense = 0;
 		$balance = 0;
+		$invoice_id = $transaction->invoice_id;
+
+		$transaction->delete();
 
 		$income = \Auth::user()
 			->transactions()
@@ -366,10 +391,17 @@ class TransactionController extends Controller {
 			->sum('amount');
 
 		$balance = $income - $expense;
-		// dd($balance);
 		$user = \Auth::user();
 		$user->balance = $balance;
 		$user->save();
+
+		$invoice = \App\Invoice::find($invoice_id);
+
+		if ($invoice->transactions->count() > 0) {
+
+		} else {
+			$invoice->delete();
+		}
 
 		return redirect('/invoices');
 	}

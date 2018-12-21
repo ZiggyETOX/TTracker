@@ -17,10 +17,10 @@ class transactionsExport implements FromCollection {
 			'transaction_sub_types_id' => 'SubType',
 			'amount' => 'Price',
 			'pb' => 'Personal/Business',
-			'description' => 'Description');
+			'description' => 'Description',
+			'owner' => 'Owner\'s Username');
 
 		$mytransactions = array($myTransactionHeaders);
-
 		foreach ($transactions as $transaction) {
 
 			$subtype = \App\TransactionSubType::find($transaction->transaction_sub_types_id);
@@ -32,7 +32,8 @@ class transactionsExport implements FromCollection {
 				'transaction_sub_types_id' => $subtype->name,
 				'amount' => $transaction->amount,
 				'pb' => $transaction->pb,
-				'description' => $transaction->description);
+				'description' => $transaction->description,
+				'owner' => $transaction->owner);
 			array_push($mytransactions, $myTransaction);
 		}
 		$this->transactions = collect($mytransactions);

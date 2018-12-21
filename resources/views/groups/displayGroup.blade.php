@@ -27,6 +27,7 @@
                 </a>
             </h2>
             Your combined total balance is: R {{ $groupBalance }}
+            <a href="/groups/{{ $group->id }}/transactions" class="btn btn-sm btn-success" style="font-weight: bold;">show all group transactions</a>
             <br>
             <br>
 

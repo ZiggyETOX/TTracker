@@ -23,12 +23,12 @@ Route::get('/overview', 'TestController@test');
 Route::get('/remove-products', '2018_11_05_115342_create_products_table@down');
 
 Route::middleware(['auth'])->group(function () {
-
 	Route::get('/groups/{group}/invoices/{date}', 'GroupController@groupTransactions');
 	Route::get('/groups/{group}/invite', 'GroupController@groupInvite');
+	Route::get('/groups/{group}/transactions', 'GroupController@allTransactions');
 	Route::post('/groups/{group_id}/invite/send', 'GroupController@groupInviteSend');
 	Route::get('/groups/add/{otp}', 'GroupController@otp');
-	Route::get('/transactions/download/{user_id}/{date}', 'TransactionController@export');
+	Route::get('/transactions/download/{type}/{id}/{date}', 'TransactionController@export');
 	Route::resource('products', 'ProductController');
 	Route::resource('groups', 'GroupController');
 	Route::resource('invoices', 'InvoiceController');

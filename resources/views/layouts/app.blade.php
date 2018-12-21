@@ -45,8 +45,7 @@
                     <ul class="nav navbar-nav">
                         @guest
                         @else
-                       <!--  <li><a href="/products">Products</a></li>
-                        <li><a href="/overview">Overview</a></li> -->
+                        <li><a href="/transactions">My Transactions</a></li>
                         <li><a href="/invoices">My Invoices</a></li>
                         <li><a href="/groups">My Groups</a></li>
                         @endguest

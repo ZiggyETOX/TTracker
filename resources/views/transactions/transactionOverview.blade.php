@@ -14,20 +14,19 @@
                 <span style="font-size: 24px;font-weight: bold;">+</span>
              TRANSACTION
                 </a>
-                <a href="/transactions/download/{{ $user->id }}/{{ $downloadType }}" class="btn btn-sm btn-success" style="font-weight: bold;">
+                <a href="/transactions/download/user/{{ $user->id }}/{{ $downloadType }}" class="btn btn-sm btn-success" style="font-weight: bold;">
                 <span style="font-size: 24px;font-weight: bold;">*</span>
              Download
                 </a>
             </h2>
-            <table class="table responsive table-striped">
+            <table class="table responsive table-striped" id="sort">
             	<thead>
             		<tr>
-            			<th>Date</th>
-                        <th>TransactionBY</th>
-                        <th>Type</th>
-                        <th>Change</th>
-            			<th>Balance<span style="float: right;">{{ $balance }}</span></th>
-            		</tr>
+                        <th scope="col">Date</th>
+                        <th scope="col">TransactionBY</th>
+                        <th scope="col">Type</th>
+                        <th scope="col">Change</th>
+                        <th scope="col">Balance<span style="float: right;">{{ $balance }}</span></th>
             	</thead>
             	<tbody>
             		@foreach($transactions as $transaction)
@@ -66,10 +65,10 @@
             		</tr>
             		@endforeach
                     <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
+                        <td style="color: transparent;">z</td>
+                        <td style="color: transparent;">z</td>
+                        <td style="color: transparent;">z</td>
+                        <td style="color: transparent;">z</td>
                         @if($balance > -1)
                         <td style="background-color: rgba(42, 178, 123, 1); color: #FFFFFF;font-weight: bold;">
                             R<span style="float: right;">{{ $balance }}</span>

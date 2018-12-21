@@ -182,6 +182,64 @@ class GroupController extends Controller {
 		return $randomString;
 	}
 
+	public function allTransactions($group_id) {
+
+		$group = \App\group::where('id', $group_id)->first();
+
+		$invoices = null;
+		$invoices = \App\Invoice::whereIn('user_id', $group->users()->pluck('users.id'))
+			->distinct()
+			->get();
+		$transactions = \App\Transaction::whereIn('invoice_id', $invoices->pluck('id')->toArray())
+			->get();
+
+		foreach ($transactions as $transaction) {
+
+			// $mydate = $transaction->date;
+
+			// $mydate = date('Y-F', strtotime($mydate));
+			// $transaction->month_date = $mydate;
+			$invoice = \App\Invoice::find($transaction->invoice_id);
+			$user = \App\User::find($invoice->user_id);
+			$transaction->owner = $user->name;
+		}
+
+		$return['transactions'] = $transactions //->where('month_date', $date)
+		->sortBy('date');
+
+		//$invoice = \App\Invoice::where('name', $date)->first();
+
+		$invoice->name_date = 'the groups lifespan';
+		$transactionsIncome = $transactions
+			->where('type', 'income')
+			// ->where('month_date', '>', $date)
+			->sum('amount');
+
+		$transactionsExpense = $transactions
+			->where('type', 'expense')
+			// ->where('month_date', '>', $date)
+			->sum('amount');
+
+		$income = $transactions
+		// ->where('month_date', $date)
+		->where('type', 'income')
+			->sum('amount');
+		$expense = $transactions
+		// ->where('month_date', $date)
+		->where('type', 'expense')
+			->sum('amount');
+
+		$invoice->change = $income - $expense;
+		$invoice->myBalance = $transactionsIncome - $transactionsExpense;
+		$invoice->balance = $invoice->myBalance + $invoice->change;
+
+		$return['invoice'] = $invoice;
+		$return['group'] = $group;
+		$return['myBalance'] = 0;
+
+		return view('/groups/groupAllTransactionsOverview', $return);
+	}
+
 	/**
 	 * Display the specified resource.
 	 *
@@ -237,14 +295,9 @@ class GroupController extends Controller {
 			$invoice->change = $income - $expense;
 			$invoice->balance = $transactionsIncome - $transactionsExpense + $invoice->change;
 		}
-		//dd($invoices);
 
 		$invoices = $invoices->sortBy('name_date');
 		$return['invoices'] = $invoices->unique('name_date');
-		// dd($return);
-
-		// 	$invoices = \App\invoice::
-		// 		$return['invoices'] = $invoices;
 
 		return view('/groups/displayGroup', $return);
 	}
